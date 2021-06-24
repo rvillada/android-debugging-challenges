@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
@@ -38,20 +39,22 @@ public class MoviesActivity extends AppCompatActivity {
 
         // Attach the adapter to a ListView
         rvMovies.setAdapter(adapter);
+        rvMovies.setLayoutManager(new LinearLayoutManager(this));
 
         fetchMovies();
     }
 
 
     private void fetchMovies() {
-        String url = " https://api.themoviedb.org/3/movie/now_playing?api_key=";
+        String url = "https://api.themoviedb.org/3/movie/now_playing?api_key=6694827002af635fdcc124eac993364c";
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, null, new JsonHttpResponseHandler() {
+        client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON response) {
                 try {
                     JSONArray moviesJson = response.jsonObject.getJSONArray("results");
                     movies = Movie.fromJSONArray(moviesJson);
+                    Log.i("success", "movies loaded correctly");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -59,7 +62,7 @@ public class MoviesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(MoviesActivity.class.getSimpleName(), "Error retrieving movies: ", throwable);
+                Log.e("tag", "Error retrieving movies: ", throwable);
             }
         });
     }
